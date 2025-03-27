@@ -563,7 +563,7 @@ function removeComments(a) {
         d.push(a);
       }
     }
-    log(`remove 评论区相关和推荐内容`);
+    log(`remove 评论区相关和推荐内容1`);
     const e = removeAi(d);
     a.datas = e;
   }
