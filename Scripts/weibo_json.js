@@ -456,15 +456,8 @@ function removeVideoRemind(a) {
     (a.tag_image_normal_dark = "");
 }
 function itemExtendHandler(a) {
-  if (
-    (mainConfig.removeRelate || mainConfig.removeGood) &&
-    a.trend &&
-    a.trend.titles
-  ) {
-    let b = a.trend.titles.title;
-    mainConfig.removeRelate && "相关推荐" === b
-      ? delete a.trend
-      : mainConfig.removeGood && "博主好物种草" === b && delete a.trend;
+  if (a.trend.titles.title) {
+    delete a.trend;
   }
   mainConfig.removeFollow && a.follow_data && (a.follow_data = null),
     mainConfig.removeRewardItem && a.reward_info && (a.reward_info = null),
@@ -562,16 +555,16 @@ function removeMediaHomelist(a) {
   mainConfig.removeLiveMedia && (log("remove 首页直播"), (a.data = {}));
 }
 function removeComments(a) {
-  let b = ["广告", "廣告", "相关内容", "推荐", "热推", "推薦"],
-    c = a.datas || [];
+  c = a.datas || [];
   if (0 !== c.length) {
     let d = [];
     for (const a of c) {
-      let c = a.adType || "";
-      -1 == b.indexOf(c) && 6 != a.type && d.push(a);
+      if (a.item_category !== "trend") {
+        d.push(a);
+      }
     }
-    log(`remove 评论区相关和推荐内容5 ${JSON.stringify(a)}`);
-    (a.datas = d), a.tip_msg && delete a.tip_msg;
+    log(`remove 评论区相关和推荐内容`);
+    a.datas = d;
   }
 }
 function containerHandler(a) {
