@@ -560,24 +560,24 @@ function removeComments(a) {
     let d = [];
     for (const v of c) {
       if (v.item_category !== "trend") {
-        const e = removeAi(v.data);
+        const e = removeAi(v);
         d.push(e);
       }
     }
-    log(`remove 评论区相关和推荐内容3`);
+    log(`remove 评论区相关和推荐内容4`);
     a.datas = d;
   }
 }
 
 function removeAi(data) {
-  if (data.comments?.length) {
+  if (data.data.comments?.length) {
     let comments = [];
-    for (const a of data.comments) {
+    for (const a of data.data.comments) {
       if (!a.user.is_vai) {
         comments.push(a);
       }
     }
-    data.comments = comments;
+    data.data.comments = comments;
   }
   return data;
 }
