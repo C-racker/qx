@@ -560,25 +560,26 @@ function removeComments(a) {
     let d = [];
     for (const v of c) {
       if (v.item_category !== "trend") {
-        const e = removeAi(v);
+        const e = removeAi(v.data);
         d.push(e);
       }
     }
-    log(`remove 评论区相关和推荐内容2`);
+    log(`remove 评论区相关和推荐内容3`);
     a.datas = d;
   }
 }
 
-function removeAi(d) {
-  const e = [];
-  for (const a of d) {
-    if (a.comments?.length) {
-      const f = a.comments.filter((v) => !v.user.is_vai);
-      a.comments = f;
+function removeAi(data) {
+  if (data.comments?.length) {
+    let comments = [];
+    for (const a of data.comments) {
+      if (!a.user.is_vai) {
+        comments.push(a);
+      }
     }
-    e.push(a);
+    data.comments = comments;
   }
-  return e;
+  return data;
 }
 
 function containerHandler(a) {
