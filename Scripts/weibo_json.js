@@ -646,8 +646,8 @@ function removePhpScreenAds(a) {
       (b.endtime = "2029-12-30 23:59:59");
   return a;
 }
-function log(a) {
-  mainConfig.isDebug && console.log(a);
+function log(a, json) {
+  mainConfig.isDebug && console.log(a, json || "");
 }
 var body = $response.body,
   url = $request.url;
