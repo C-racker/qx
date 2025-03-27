@@ -554,31 +554,27 @@ function removeCheckin(a) {
 function removeMediaHomelist(a) {
   mainConfig.removeLiveMedia && (log("remove 首页直播"), (a.data = {}));
 }
-function removeComments(a) {
-  c = a.datas || [];
-  if (0 !== c.length) {
-    let d = [];
-    for (const v of c) {
-      if (v.item_category !== "trend") {
-        const e = removeAi(v);
-        d.push(e);
-      }
-    }
-    log(`remove 评论区相关和推荐内容4`);
-    a.datas = d;
-  }
+function removeComments(data) {
+  const comments = data.datas || [];
+  if (comments.length === 0) return;
+
+  data.datas = comments
+    .filter((item) => item.item_category !== "trend")
+    .map(removeAi);
+
+  log("已移除评论区相关和推荐内容");
 }
 
+/**
+ * 移除AI生成的评论
+ * @param {Object} data - 单条评论数据
+ * @returns {Object} - 处理后的评论数据
+ */
 function removeAi(data) {
-  if (data.data.comments?.length) {
-    let comments = [];
-    for (const a of data.data.comments) {
-      if (!a.user.is_vai) {
-        comments.push(a);
-      }
-    }
-    data.data.comments = comments;
-  }
+  const comments = data.data?.comments;
+  if (!comments?.length) return data;
+
+  data.data.comments = comments.filter((comment) => !comment.user.is_vai);
   return data;
 }
 
