@@ -163,12 +163,10 @@ function removeTopics(a) {
 function isAd(a) {
   return (
     !!a &&
-    (!(
-      "\u5E7F\u544A" != a.mblogtypename && "\u70ED\u63A8" != a.mblogtypename
-    ) ||
+    (!("广告" != a.mblogtypename && "热推" != a.mblogtypename) ||
       !("ad" != a.promotion?.type) ||
       !("ad" != a.page_info?.actionlog?.source) ||
-      !("\u5E7F\u544A" != a.content_auth_info?.content_auth_title))
+      !("广告" != a.content_auth_info?.content_auth_title))
   );
 }
 function squareHandler(a) {
@@ -212,9 +210,7 @@ function removeMain(a) {
             a?.data?.itemid?.includes("search_input") ||
             202 == a?.data?.card_type
         )),
-          (c.items[0].data.hotwords = [
-            { word: "\u641C\u7D22\u8D85\u8BDD", tip: "" },
-          ]),
+          (c.items[0].data.hotwords = [{ word: "搜索超话", tip: "" }]),
           b.push(c);
       else if (
         0 < c.items.length &&
@@ -249,7 +245,7 @@ function topicHandler(a) {
     } else {
       if (!mainConfig.removeUnusedPart) continue;
       if ("bottom_mix_activity" == e.itemid) a = false;
-      else if ("\u6B63\u5728\u6D3B\u8DC3" == e?.top?.title) a = false;
+      else if ("正在活跃" == e?.top?.title) a = false;
       else if (200 == e.card_type && e.group) a = false;
       else {
         let b = e.card_group;
@@ -421,7 +417,7 @@ function lvZhouHandler(a) {
     let b = a.common_struct;
     if (b) {
       let c = [];
-      for (const a of b) "\u7EFF\u6D32" != a.name && c.push(a);
+      for (const a of b) "绿洲" != a.name && c.push(a);
       a.common_struct = c;
     }
   }
@@ -466,11 +462,9 @@ function itemExtendHandler(a) {
     a.trend.titles
   ) {
     let b = a.trend.titles.title;
-    mainConfig.removeRelate && "\u76F8\u5173\u63A8\u8350" === b
+    mainConfig.removeRelate && "相关推荐" === b
       ? delete a.trend
-      : mainConfig.removeGood &&
-        "\u535A\u4E3B\u597D\u7269\u79CD\u8349" === b &&
-        delete a.trend;
+      : mainConfig.removeGood && "博主好物种草" === b && delete a.trend;
   }
   mainConfig.removeFollow && a.follow_data && (a.follow_data = null),
     mainConfig.removeRewardItem && a.reward_info && (a.reward_info = null),
@@ -562,21 +556,13 @@ function removeHome(a) {
   return (a.items = b), a;
 }
 function removeCheckin(a) {
-  log("remove tab1\u7B7E\u5230"), (a.show = 0);
+  log("remove tab1签到"), (a.show = 0);
 }
 function removeMediaHomelist(a) {
-  mainConfig.removeLiveMedia &&
-    (log("remove \u9996\u9875\u76F4\u64AD"), (a.data = {}));
+  mainConfig.removeLiveMedia && (log("remove 首页直播"), (a.data = {}));
 }
 function removeComments(a) {
-  let b = [
-      "\u5E7F\u544A",
-      "\u5EE3\u544A",
-      "\u76F8\u5173\u5185\u5BB9",
-      "\u63A8\u8350",
-      "\u70ED\u63A8",
-      "\u63A8\u85A6",
-    ],
+  let b = ["广告", "廣告", "相关内容", "推荐", "热推", "推薦"],
     c = a.datas || [];
   if (0 !== c.length) {
     let d = [];
@@ -584,23 +570,21 @@ function removeComments(a) {
       let c = a.adType || "";
       -1 == b.indexOf(c) && 6 != a.type && d.push(a);
     }
-    log("remove \u8BC4\u8BBA\u533A\u76F8\u5173\u548C\u63A8\u8350\u5185\u5BB9"),
+    log("remove 评论区相关和推荐内容"),
       (a.datas = d),
       a.tip_msg && delete a.tip_msg;
   }
 }
 function containerHandler(a) {
   mainConfig.removeInterestFriendInTopic &&
-    "\u8D85\u8BDD\u91CC\u7684\u597D\u53CB" === a.card_type_name &&
-    (log("remove \u8D85\u8BDD\u91CC\u7684\u597D\u53CB"), (a.card_group = [])),
+    "超话里的好友" === a.card_type_name &&
+    (log("remove 超话里的好友"), (a.card_group = [])),
     mainConfig.removeInterestTopic &&
       a.itemid &&
       (-1 < a.itemid.indexOf("infeed_may_interest_in")
-        ? (log("remove \u611F\u5174\u8DA3\u7684\u8D85\u8BDD"),
-          (a.card_group = []))
+        ? (log("remove 感兴趣的超话"), (a.card_group = []))
         : -1 < a.itemid.indexOf("infeed_friends_recommend") &&
-          (log("remove \u8D85\u8BDD\u597D\u53CB\u5173\u6CE8"),
-          (a.card_group = [])));
+          (log("remove 超话好友关注"), (a.card_group = [])));
 }
 function userHandler(a) {
   if (((a = removeMainTab(a)), !mainConfig.removeInterestUser)) return a;
@@ -610,8 +594,7 @@ function userHandler(a) {
     let a = true;
     if ("group" == c.category)
       try {
-        "\u53EF\u80FD\u611F\u5174\u8DA3\u7684\u4EBA" == c.items[0].data.desc &&
-          (a = false);
+        "可能感兴趣的人" == c.items[0].data.desc && (a = false);
       } catch (a) {}
     a && (c.data?.common_struct && delete c.data.common_struct, b.push(c));
   }
