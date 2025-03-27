@@ -559,12 +559,15 @@ function removeComments(a) {
   if (c.length) {
     let d = [];
     for (const v of c) {
-      if (v.item_category !== "trend" && !v.data?.user?.is_vai) {
+      if (
+        v.item_category !== "trend" &&
+        (!v.data?.user?.is_vai || v.data.reply_ai_type)
+      ) {
         const e = removeAi(v);
         d.push(e);
       }
     }
-    log(`remove 评论区相关和推荐内容5`);
+    log(`remove 评论区相关和推荐内容6`);
     a.datas = d;
   }
 }
@@ -573,7 +576,7 @@ function removeAi(data) {
   if (data.data.comments?.length) {
     let comments = [];
     for (const a of data.data.comments) {
-      if (!a.user.is_vai) {
+      if (!a.user.is_vai && !a.reply_ai_type) {
         comments.push(a);
       }
     }
