@@ -558,14 +558,14 @@ function removeComments(a) {
   c = a.datas || [];
   if (0 !== c.length) {
     let d = [];
-    for (const a of c) {
-      if (a.item_category !== "trend") {
-        d.push(a);
+    for (const v of c) {
+      if (v.item_category !== "trend") {
+        const e = removeAi(v);
+        d.push(e);
       }
     }
-    log(`remove 评论区相关和推荐内容1`);
-    const e = removeAi(d);
-    a.datas = e;
+    log(`remove 评论区相关和推荐内容2`);
+    a.datas = d;
   }
 }
 
