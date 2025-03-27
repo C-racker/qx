@@ -563,10 +563,24 @@ function removeComments(a) {
         d.push(a);
       }
     }
-    log(`remove 评论区相关和推荐内容1`);
-    a.datas = d;
+    log(`remove 评论区相关和推荐内容`);
+    const e = removeAi(d);
+    a.datas = e;
   }
 }
+
+function removeAi(d) {
+  const e = [];
+  for (const a of d) {
+    if (a.comments.length) {
+      const f = a.comments.filter((v) => !v.user.is_vai);
+      a.comments = f;
+    }
+    e.push(a);
+  }
+  return e;
+}
+
 function containerHandler(a) {
   mainConfig.removeInterestFriendInTopic &&
     "超话里的好友" === a.card_type_name &&
