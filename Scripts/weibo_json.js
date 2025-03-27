@@ -568,7 +568,7 @@ function removeComments(a) {
         d.push(e);
       }
     }
-    log(`remove 评论区相关和推荐内容6`);
+    log(`remove 评论区相关和推荐内容7`);
     a.datas = d;
   }
 }
