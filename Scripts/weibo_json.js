@@ -456,7 +456,7 @@ function removeVideoRemind(a) {
     (a.tag_image_normal_dark = "");
 }
 function itemExtendHandler(a) {
-  if (a.trend.titles.title) {
+  if (a.trend?.titles?.title) {
     delete a.trend;
   }
   mainConfig.removeFollow && a.follow_data && (a.follow_data = null),
@@ -563,7 +563,7 @@ function removeComments(a) {
         d.push(a);
       }
     }
-    log(`remove 评论区相关和推荐内容`);
+    log(`remove 评论区相关和推荐内容1`);
     a.datas = d;
   }
 }
