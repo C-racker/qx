@@ -561,7 +561,8 @@ function removeComments(a) {
     for (const v of c) {
       if (
         v.item_category !== "trend" &&
-        (!v.data?.user?.is_vai || v.data.reply_ai_type)
+        !v.data?.user?.is_vai &&
+        !v.data.reply_ai_type
       ) {
         const e = removeAi(v);
         d.push(e);
