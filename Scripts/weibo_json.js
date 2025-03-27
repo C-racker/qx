@@ -570,7 +570,7 @@ function removeComments(a) {
       let c = a.adType || "";
       -1 == b.indexOf(c) && 6 != a.type && d.push(a);
     }
-    log(`remove 评论区相关和推荐内容3 ${JSON.stringify(a)}`);
+    log(`remove 评论区相关和推荐内容4 ${JSON.stringify(a.datas)}`);
     (a.datas = d), a.tip_msg && delete a.tip_msg;
   }
 }
