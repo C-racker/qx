@@ -572,7 +572,7 @@ function removeComments(a) {
 function removeAi(d) {
   const e = [];
   for (const a of d) {
-    if (a.comments.length) {
+    if (a.comments?.length) {
       const f = a.comments.filter((v) => !v.user.is_vai);
       a.comments = f;
     }
