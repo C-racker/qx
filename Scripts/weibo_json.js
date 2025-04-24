@@ -377,6 +377,7 @@ function removeMsgAd(data) {
       message.msg_card?.ad_tag || filteredMessages.push(message);
     return (data.messages = filteredMessages), data;
   }
+  return response;
 }
 function removePage(data) {
   return (
@@ -518,6 +519,9 @@ function updateFollowOrder(data) {
           )),
           void log("updateFollowOrder success")
         );
+
+        log("updateFollowOrder success");
+        return;
       }
   } catch (error) {
     console.log("updateFollowOrder fail");
@@ -537,6 +541,7 @@ function updateProfileSkin(data, skinKey) {
             item.dot && (item.dot = []);
         } catch (error) {}
     log("updateProfileSkin success");
+  } catch (error) {
   } catch (error) {
     console.log("updateProfileSkin fail");
   }
@@ -606,9 +611,11 @@ function removeAi(data) {
         comments.push(comment);
       }
     }
-    data.data.comments = comments;
+
+    commentData.data.comments = filteredComments;
   }
-  return data;
+
+  return commentData;
 }
 
 function containerHandler(data) {
@@ -656,8 +663,11 @@ function tabSkinHandler(data) {
         (icon.downloadlink = mainConfig.tabIconPath);
     log("tabSkinHandler success");
   } catch (error) {
+  } catch (error) {
     log("tabSkinHandler fail");
   }
+
+  return response;
 }
 function skinPreviewHandler(data) {
   data.data.skin_info.status = 1;
@@ -691,15 +701,29 @@ function removePhpScreenAds(data) {
 function log(message, json) {
   mainConfig.isDebug && console.log(message, json || "");
 }
-var body = $response.body,
-  url = $request.url;
+var body = $response.body;
+var url = $request.url;
+
+// 获取处理方法
 let method = getModifyMethod(url);
+
 if (method) {
   log(method);
-  var func = eval(method);
+
+  // 解析响应数据
   let data = JSON.parse(body.match(/\{.*\}/)[0]);
-  new func(data),
-    (body = JSON.stringify(data)),
-    "removePhpScreenAds" == method && (body = JSON.stringify(data) + "OK");
+
+  // 执行对应的处理函数
+  let handler = eval(method);
+  data = new handler(data);
+
+  // 将处理后的数据转回字符串
+  body = JSON.stringify(data);
+
+  // 处理PHP屏幕广告的特殊情况
+  if (method === "removePhpScreenAds") {
+    body = body + "OK";
+  }
 }
+
 $done({ body });
