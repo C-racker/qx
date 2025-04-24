@@ -597,7 +597,7 @@ function removeComments(data) {
         filteredComments.push(processedComment);
       }
     }
-    log(`remove 评论区相关和推荐内容 11:05:46`);
+    log(`remove 评论区相关和推荐内容 11:10:04`);
     data.datas = filteredComments;
   }
 }
