@@ -124,6 +124,7 @@ function removeAdBanner(a) {
     a.data.detail_banner_ad && (a.data.detail_banner_ad = []),
     a
   );
+  
 }
 function removeAdPreload(a) {
   if (!a.ads) return a;
