@@ -108,13 +108,16 @@ const mainConfig = {
     "php?a=open_app": "removeAdBanner",
   };
 function getModifyMethod(a) {
-  for (const b of modifyCardsUrls) if (-1 < a.indexOf(b)) return "removeCards";
+  if (!a || typeof a !== "string") return null; // ✅ 防止 undefined 或非字符串
+
+  for (const b of modifyCardsUrls) if (a.includes(b)) return "removeCards";
   for (const b of modifyStatusesUrls)
-    if (-1 < a.indexOf(b)) return "removeTimeLine";
-  for (const [b, c] of Object.entries(otherUrls))
-    if (-1 < a.indexOf(b)) return c;
+    if (a.includes(b)) return "removeTimeLine";
+  for (const [b, c] of Object.entries(otherUrls)) if (a.includes(b)) return c;
+
   return null;
 }
+
 function removeRealtimeAd(a) {
   return delete a.ads, (a.code = 4016), a;
 }
@@ -568,7 +571,7 @@ function removeComments(a) {
         d.push(e);
       }
     }
-    log(`remove 评论区相关和推荐内容7`);
+    log(`remove 评论区相关和推荐内容0`);
     a.datas = d;
   }
 }
@@ -660,8 +663,17 @@ function removePhpScreenAds(a) {
 function log(a, json) {
   mainConfig.isDebug && console.log(a, json || "");
 }
-var body = $response.body,
-  url = $request.url;
+
+// ==========================
+// ✅ 支持 Quantumult X 执行
+// ==========================
+if (typeof $done !== "undefined") {
+  var body = $response.body;
+  var url = $request.url;
+  const modified = modifyWeiboBody(url, body);
+  $done({ body: modified });
+}
+
 let method = getModifyMethod(url);
 if (method) {
   log(method);
@@ -671,4 +683,30 @@ if (method) {
     (body = JSON.stringify(data)),
     "removePhpScreenAds" == method && (body = JSON.stringify(data) + "OK");
 }
-$done({ body });
+
+function modifyWeiboBody(url, bodyStr) {
+  try {
+    const method = getModifyMethod(url);
+    if (!method) return bodyStr;
+
+    const func = eval(method);
+    const jsonMatch = bodyStr.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) return bodyStr;
+
+    const data = JSON.parse(jsonMatch[0]);
+    func(data);
+    let result = JSON.stringify(data);
+    if (method === "removePhpScreenAds") result += "OK";
+    return result;
+  } catch (e) {
+    console.log("⚠️ modifyWeiboBody error:", e);
+    return bodyStr;
+  }
+}
+
+// ==========================
+// ✅ 支持 Node.js 模式导出
+// ==========================
+if (typeof module !== "undefined") {
+  module.exports = { modifyWeiboBody };
+}
