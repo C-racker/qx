@@ -942,7 +942,7 @@ function removeComments(response) {
       }
     }
 
-    log(`remove 评论区相关和推荐内容7`);
+    log(`remove 评论区相关和推荐内容8`);
     response.datas = filteredDatas;
   }
 }
